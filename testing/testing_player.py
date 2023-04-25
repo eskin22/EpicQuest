@@ -1,21 +1,27 @@
 
 # append sys path to access the class files
+import random
 import sys, os
 sys.path.append('../EpicQuest')
 
 # import player class
-from classes.player import Player
-
-# create player object
-player = Player("Chad", "Fuck")
+from classes.enemies import Dragon
 
 # define basic enemy class
-class Enemy():
+class Player():
     def __init__(self, name, hp):
         self.name = name
         self.hp = hp
 
-# create enemy object 
-goblin = Enemy("Goblin", 25)
+# create dragon object with attributes
+dragon = Dragon()
 
-player.attack(goblin)
+# create player object
+chad = Player("Chad", 45)
+
+# call combat method on dragon object, passing in player object
+dragon.combat(chad)
+
+# print(dragon.get_random_phrase())
+# print(dragon.test())
+
