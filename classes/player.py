@@ -9,7 +9,9 @@ from tiles import Enemy_tile
 from tiles import Random_Paper_Tile
 from inventory import Inventory
 from _util import create_textbox
+from _util import look_at_paper_object
 from items import PaperObject
+from tiles import Weapon_Tile
 
 
 # Better Comments
@@ -38,6 +40,7 @@ class Player:
         self.player_x = None
         self.player_y = None
         self.equipped_weapon = None
+        self.weapon_power = None
         self.inventory = Inventory()
 
 
@@ -67,44 +70,48 @@ class Player:
         # The method uses a for loop and enumerate to iterate over the attack type keys and display them with corresponding numbers.
         print("\n")
 
-        # Loops through attack methods and prints them out
-        for i, key in enumerate(self.attack_types.keys()):
-            print(Fore.BLUE + f"{i+1}. {key}")
-
         # Prompts the player for input on how they would like to attack.
-        selected_attack_display_index = int(input(Fore.BLUE + "\033[1m\nHow would you like to attack?"))
+        while True: 
+            selected_attack_style = int(input(Fore.BLUE + "\033[1mHow would you like to attack?\n1. Weapon Attack\n2. Player Attack\n"))
+            if selected_attack_style == 1:
+                if self.equipped_weapon is not None:
+                    print(f"{self.equipped_weapon.name}")
+                    weapon_info = self.equipped_weapon.display_weapon()
+                    print(Fore.LIGHTYELLOW_EX + f"Enemy has been struck with your {self.equipped_weapon.name}.")
+                    attack_power = self.equipped_weapon.damage 
+                    total_attack_power = attack_power + self.weapon_power
+                    print(Fore.LIGHTYELLOW_EX + f"You have done {total_attack_power} damage!")
+                    total_mana = self.mana - (attack_power / 1.2)
+                    print(Fore.LIGHTYELLOW_EX + f"Player Mana: {total_mana}\n")
 
+                    return total_attack_power
+                else:
+                    print("You do not have a weapon equipped. Choose another option.")
 
-        # It retrieves the selected attack type by converting the input to an integer and subtracting 1 to get the index.
-        selected_attack_real_index = selected_attack_display_index - 1
+        # Loops through attack methods and prints them out
+            elif selected_attack_style == 2:
+                for i, key in enumerate(self.attack_types.keys()):
+                    print(Fore.WHITE + f"\n{i+1}. {key}")
 
-        # It creates a list of attack type keys
-        attack_type_keys = list(self.attack_types.keys())
-
+                selected_attack_display_index = int(input(Fore.BLUE + "\033[1m\nHow would you like to attack?"))
+                selected_attack_real_index = selected_attack_display_index - 1
+                attack_type_keys = list(self.attack_types.keys())
+                selected_attack_string_key = attack_type_keys[selected_attack_real_index]
+                print(Fore.LIGHTYELLOW_EX + f"\nEnemy has been struck with {selected_attack_string_key}")
+                attack_power = self.attack_types.get(selected_attack_string_key)
+                total_attack_power = self.attack_power + attack_power
+                print(Fore.LIGHTYELLOW_EX + f"You have done {total_attack_power} damage!")
+                total_mana = self.mana - (attack_power / 1.2)
+                print(Fore.LIGHTYELLOW_EX + f"Player Mana: {total_mana}\n")
         
-        #It retrieves the selected attack string key using the index.
-        selected_attack_string_key = attack_type_keys[selected_attack_real_index]
 
+                return total_attack_power
 
-        print(Fore.LIGHTYELLOW_EX + f"\nEnemy has been struck with {selected_attack_string_key}")
+                
+            
 
-        # It retrieves the attack power of the selected attack type from the attack_types dictionary.
-        attack_power = self.attack_types.get(selected_attack_string_key)
-
-        #It calculates the total attack power by adding the player's base attack power 
-        #(self.attack_power) to the attack power of the selected attack type.
-        total_attack_power = self.attack_power + attack_power
-
-        print(Fore.LIGHTYELLOW_EX + f"You have done {total_attack_power} damage!")
-
-        #It calculates the total mana by taking the starting mana and then dividing by 1.2.
-        #? May update the methodology behind when the enemies get stronger.
-
-        total_mana = self.mana - (attack_power / 1.2)
-        print(Fore.LIGHTYELLOW_EX + f"Player Mana: {total_mana}\n")
-        
-
-        return total_attack_power
+        else:
+            print("You have entered an invalid number. Try again.")
 
    
    
@@ -169,6 +176,11 @@ class Player:
 
                 if isinstance(new_tile, Random_Paper_Tile):
                     new_tile.interact()
+                    new_tile.add_object_option(self.inventory)
+                    self.display_player_inventory()
+
+                if isinstance(new_tile, Weapon_Tile):
+                    new_tile.interact(self)
               
             # The player is out of bounds, essentially, they have hit a "wall" in the room.
             else:
@@ -177,15 +189,24 @@ class Player:
     
     
     
-    
+    #* This method displays the Player Inventory
     def display_player_inventory(self):
-        category_selection = self.inventory.inventory_menu()
-        self.inventory.display_inventory_new(category_selection)
-        selection = input("What would you like to do? (type command $ins to inspect)")
-        # # # selection = "$ins 1"
-        if selection[:4] == '$ins':
-            self.inspect_new(category_selection, int(selection[5:]))
+        while True:
+            category_selection = self.inventory.inventory_menu()
+            self.inventory.display_inventory_new(category_selection)
+            selection = input("\nWhat would you like to do? (type command $ins to inspect, type command $exit to exit menu.)")
+            # # # selection = "$ins 1"
+            if selection[:4] == '$ins':
+                self.inspect_new(category_selection, int(selection[5:]))
+            if selection[:5] == '$exit':
+                break 
+            else:
+                print("You have entered an invalid response.")
+                pass
 
+    
+    
+   #* This method allows a user to inspect an item within the inventory 
     def inspect_new(self, category, item_selection):
         # start default actions dictionary which contains all actions that the player can perform on ANY item
         # key is a string of what the action is (this will be useful when we want to easily iterate through the keys of the actions dictionary to 
@@ -208,7 +229,7 @@ class Player:
             actions["Equip Weapon"] = self.equip_weapon
 
         elif category == "Paper Object":
-            actions["Read Item"] = self.look_at_paper_object
+            actions["Read Item"] = look_at_paper_object
 
         else:
             pass
@@ -258,17 +279,9 @@ class Player:
 
 
 
-    #* Read Paper Objects
-    def look_at_paper_object(self, paper_object):
-        read = input(f"Would you like to read the {paper_object.name}\n1. yes\n2. no")
 
-        if read == "1":
-            print("---------------------------------------------------------")
-            print(f"{paper_object.content}")
-            print("---------------------------------------------------------")
-        else: 
-            pass
-
+   
+   
     #* This method is used so a player can equip a weapon
     def equip_weapon(self, weapon):
         if weapon.item_type == "Weapon":
@@ -285,8 +298,9 @@ class Player:
 
 #* This a the subclass Human, which is a race a player can choose
 class Human(Player):
-    def __init__(self, name, race, weapon):
+    def __init__(self, name, race):
         super().__init__(name, race)
+        self.skills = "Humans are adaptable creatures. Although not the strongest, they can excel in a number of areas through learned behavior. Due to their lack of raw strength, humans are especially skilled in tools and in weapon combat."
         self.name = name
         self.race = race
         self.attack_power = 5
@@ -300,12 +314,14 @@ class Human(Player):
         self.mana = 10
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.weapon = None
+        self.weapon_power = 15
 
 #* This a the subclass Elf, which is a race a player can choose
 class Elf(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
         self.attack_power = 7
@@ -320,11 +336,13 @@ class Elf(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon_power = 7
 
 #* This a the subclass Dwarf, which is a race a player can choose
 class Dwarf(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
         self.attack_power = 5
@@ -340,11 +358,13 @@ class Dwarf(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon_power = 17
 
 #* This a the subclass Orc, which is a race a player can choose
 class Orc(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
         self.attack_power = 8
@@ -361,11 +381,14 @@ class Orc(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon_power = 15
+        self.weapon_power = 12
 
 #* This a the subclass Gnome, which is a race a player can choose
 class Gnome(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
         self.attack_power = 8
@@ -381,12 +404,14 @@ class Gnome(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon_power = 6
 
 
 #* This a the subclass Tiefling, which is a race a player can choose
 class Tiefling(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
         self.attack_power = 8
@@ -402,11 +427,13 @@ class Tiefling(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon_power = 5
 
 #* This a the subclass Dragon, which is a race a player can choose
 class Dragonborn(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
         self.attack_power = 10
@@ -422,14 +449,16 @@ class Dragonborn(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon = 9
         
 #* This a the subclass Tiefling, which is a race a player can choose       
 class Goblin(Player):
     def __init__(self, name, race, weapon):
         super().__init__(name, race)
+        self.skills = "Blah, blah, blah"
         self.name = name
         self.race = race
-        self.attack_power = 4
+        self.attack_power = 6
         self.hp = 97
         self.restore_hp = 97
         self.attack_types = {
@@ -442,3 +471,4 @@ class Goblin(Player):
         self.player_x = 0
         self.player_y = 0
         self.weapon = weapon
+        self.weapon_power = 6

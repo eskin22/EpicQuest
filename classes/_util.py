@@ -76,10 +76,31 @@ def create_textbox(random_list, background_color=Back.WHITE):
         print(background_color + " " * 5 + line + padding + " " * 5 + Back.RESET)
 
 
+
+
+
+
+
+
 def get_random_attribute(min, max):
         attribute = random.randint(min, max)
         return attribute
 
+
+
+
+#* Read Paper Objects
+# This method takes a user's input if they want to read an object or not
+def look_at_paper_object(paper_object):
+    read = input(f"Would you like to read the {paper_object.name}\n1. Yes\n2. No")
+
+    if read == "1":
+        print("---------------------------------------------------------")
+        print(f"{paper_object.content}")
+        print("---------------------------------------------------------")
+        
+    else: 
+        pass
 
 
 

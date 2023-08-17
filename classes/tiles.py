@@ -11,9 +11,11 @@ from miscellaneous_room_items import Table_One
 from combat import Combat_Engine
 # from items import Dwarvian_book_page
 from colorama import init
+from inventory import Inventory
 init()
 from colorama import Fore, Back, Style
-from _util import create_textbox
+from _util import look_at_paper_object
+from items import Item
 
 
 class Tile:
@@ -55,6 +57,27 @@ class Enemy_tile(Tile):
         combat.perform_combat(player, self.enemy)
 
 
+class Weapon_Tile(Tile):
+    def __init__(self, weapon):
+        super().__init__()
+        self.weapon = weapon
+        self.description = Fore.WHITE + "You have stumbled upon an abandoned weapon!"
+        # weapon.display_weapon
+    
+    def interact(self, weapon):
+        self.weapon.display_weapon()
+        weapon_option = input("What would you like to do with this weapon? \n1. Add it inventory \n2. Equip Weapon \n. Keep moving.")
+        if weapon_option == "1":
+            weapon.add_item_new()
+        elif weapon_option == "2":
+            weapon.equip_weapon()
+        else:
+            print("You have decided not pick up the weapon.")
+
+
+
+
+
 class Chest_Tile(Tile):
     def __init__(self, chest):
         super().__init__()
@@ -77,10 +100,17 @@ class Table_Tile(Tile):
 class Random_Paper_Tile(Tile):
     def __init__(self, paper):
         super().__init__()
+        self.description = paper.description
         self.paper = paper
 
+    def print_description(self):
+        return self.description
+
     def interact(self):
-        self.paper.look_at_paper_object()
+        self.paper.read_it()
+
+    def add_object_option(self, inventory):
+        self.paper.inventory_option(inventory)
 
 
 # random_table = Table_One()
