@@ -53,6 +53,9 @@ class WoodenSword(Sword):
         self.weight = 3
         self.forge_type = "Wood"
 
+    def inventory_option(self, inventory):
+        inventory.add_item_new(self)
+
 
 # Subclass for an Iron Sword
 class IronSword(Sword):
@@ -122,16 +125,3 @@ class DwarvianBookPage(PaperObject):
 
     # def look_at_paper_object(self):
     #     print(f"{self.content}")
-
-
-
-
-
-
-
-
-
-
-
-    
-

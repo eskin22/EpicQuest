@@ -4,8 +4,14 @@ from items import WoodenSword
 from items import DwarvianBookPage
 from combat import Combat_Engine
 from enemies import Level_One_Dragon
+from room import Foyer
 
-# player = Human(name= "Cai", race = "Human") 
+foyer = Foyer
+
+
+player = Human(name= "Cai", race = "Human")
+
+foyer.print_room(player)
 # dragon = Level_One_Dragon()
 
 # wooden_sword = WoodenSword()

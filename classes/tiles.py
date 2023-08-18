@@ -57,20 +57,23 @@ class Enemy_tile(Tile):
         combat.perform_combat(player, self.enemy)
 
 
-class Weapon_Tile(Tile):
+class WeaponTile(Tile):
     def __init__(self, weapon):
         super().__init__()
         self.weapon = weapon
         self.description = Fore.WHITE + "You have stumbled upon an abandoned weapon!"
         # weapon.display_weapon
     
-    def interact(self, weapon):
+    def add_object_option(self, inventory):
+        self.weapon.inventory_option(inventory)
+
+    def interact(self, player, inventory):
         self.weapon.display_weapon()
         weapon_option = input("What would you like to do with this weapon? \n1. Add it inventory \n2. Equip Weapon \n. Keep moving.")
         if weapon_option == "1":
-            weapon.add_item_new()
+            self.add_object_option(inventory)
         elif weapon_option == "2":
-            weapon.equip_weapon()
+            player.equip_weapon(self.weapon)
         else:
             print("You have decided not pick up the weapon.")
 
@@ -122,5 +125,4 @@ class Random_Paper_Tile(Tile):
 
     
        
-
 

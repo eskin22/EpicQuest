@@ -10,6 +10,7 @@ from _util import create_player
 from _util import run
 from room import Foyer
 from colorama import init
+# from _util import options_menu
 init()
 from colorama import Fore, Back, Style
 from _util import create_textbox
@@ -67,7 +68,7 @@ class Game:
         ]
         create_textbox(start_of_dungeon, background_color=Back.LIGHTRED_EX)
         foyer = Foyer()
-        self.player.player_movements(foyer)
+        self.player.player_menu_bar(foyer)
 
 
 

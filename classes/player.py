@@ -11,7 +11,8 @@ from inventory import Inventory
 from _util import create_textbox
 from _util import look_at_paper_object
 from items import PaperObject
-from tiles import Weapon_Tile
+from tiles import WeaponTile
+# from _util import options_menu
 
 
 # Better Comments
@@ -110,67 +111,87 @@ class Player:
                 
             
 
-        else:
-            print("You have entered an invalid number. Try again.")
+            else:
+                print("You have entered an invalid number. Try again.")
 
    
    
    
+    #* Player_Menu 
+        # This will be a menu that will ask the player if they want to move, view their stats, or view their inventory.
+    def player_menu_bar(self, room):
+        while True:
+            player_options = input(
+            Fore.LIGHTWHITE_EX
+            + "What would you like to do? \n1. Move \n2. View your stats \n3. View your inventory "
+        ).strip()
+            print(f"User input: '{player_options}'")  # Add this line for debugging
+
+            if player_options == "1":
+                self.player_movements(room)
+            
+            elif player_options == "2":
+                    self.display_info()
+ 
+            elif player_options == "3":
+                    self.display_player_inventory()
+         
+            else:
+                print("Invalid option. Please choose a valid option.")
+  
    
-   
-   
-   #* This function handles the player movements 
-        # It takes the players current position and stores it in a list. These work as coordinates within the Room classes. 
+    
+    #* Handles the player movements
     def player_movements(self, room):
-        current_position = [self.player_x, self.player_y]
+         current_position = [self.player_x, self.player_y]
 
-        # While the player is still in the room, this will keep running
-        while True: 
-            move = input(Fore.LIGHTCYAN_EX + "\033[1mHow would you like to move?\033[0m" + Fore.LIGHTCYAN_EX+ "\n1. Up" + Fore.LIGHTCYAN_EX + "\n2. Down" + Fore.LIGHTCYAN_EX + "\n3. Right" + Fore.LIGHTCYAN_EX + "\n4. Left: ")
+         # While the player is still in the room, this will keep running
+         move = input(Fore.LIGHTCYAN_EX + "\033[1mHow would you like to move?\033[0m" + Fore.LIGHTCYAN_EX+ "\n1. Up" + Fore.LIGHTCYAN_EX + "\n2. Down" + Fore.LIGHTCYAN_EX + "\n3. Right" + Fore.LIGHTCYAN_EX + "\n4. Left: ")
+           
 
-            new_position_x = self.player_x
-            new_position_y = self.player_y
+         new_position_x = self.player_x
+         new_position_y = self.player_y
 
-            # If the player enters 1, the player will move forward
-            if move == "1":
+    #         # If the player enters 1, the player will move forward
+         if move == "1":
                 new_position_x -= 1 
                 print(new_position_x, new_position_y)
 
-            # If the player enters 2, the player will move backward
-            elif move == "2":
+    #         # If the player enters 2, the player will move backward
+         elif move == "2":
                 new_position_x += 1
                 print(new_position_x, new_position_y)
 
-            # If the player enters 3, the player will move up
-            elif move == "3":
+    #         # If the player enters 3, the player will move up
+         elif move == "3":
                 new_position_y += 1  # Right
                 print(new_position_x, new_position_y)
 
-            # If the player enters 4, the player will move down
-            elif move == "4":
+    #         # If the player enters 4, the player will move down
+         elif move == "4":
                 new_position_y -= 1  # Left
                 print(new_position_x, new_position_y)
 
-            # If the player enters a number that is not 1, 2, 3, or 4, the move will be invalid.
-            else:
+    #         # If the player enters a number that is not 1, 2, 3, or 4, the move will be invalid.
+         else:
                 print("Invalid move! Please try again.")
-                continue
+
 
             
-            # Check if the new_position is valid and within the bounds of the room
-            if (0 <= new_position_x < room.height) and (0 <= new_position_y < room.width):
-            # Move the character to the new position
+    #         # Check if the new_position is valid and within the bounds of the room
+         if (0 <= new_position_x < room.height) and (0 <= new_position_y < room.width):
+    #         # Move the character to the new position
                 room.tiles[self.player_x, self.player_y] = Empty_Tile()
                 self.player_x = new_position_x  # Update the player's position in the Player class
                 self.player_y = new_position_y
 
-                #Find the new tile
+    #             #Find the new tile
                 new_tile = room.tiles[self.player_x, self.player_y]
                 print(f"Player moved to position: [{self.player_x, self.player_y}]")
                 print(new_tile.print_description())
 
-                #* Check to see if it is an enemy tile
-                    # if it is an enemy tile, the player will engage in combat with the enemy that is called in the Enemy_Tile class
+    #             #* Check to see if it is an enemy tile
+    #                 # if it is an enemy tile, the player will engage in combat with the enemy that is called in the Enemy_Tile class
                 if isinstance(new_tile, Enemy_tile):
                     new_tile.interact(self)
 
@@ -179,12 +200,15 @@ class Player:
                     new_tile.add_object_option(self.inventory)
                     self.display_player_inventory()
 
-                if isinstance(new_tile, Weapon_Tile):
-                    new_tile.interact(self)
+                if isinstance(new_tile, WeaponTile):
+                    new_tile.interact(self, self.inventory)
+                    self.display_player_inventory()
+                    
               
             # The player is out of bounds, essentially, they have hit a "wall" in the room.
-            else:
-                print("You have hit a wall! Pick a different direction to move!")
+         else:
+            print("You have hit a wall! Pick a different direction to move!")
+
 
     
     

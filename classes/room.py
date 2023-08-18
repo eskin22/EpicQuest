@@ -6,7 +6,7 @@ from tiles import Table_Tile
 from tiles import Random_Paper_Tile
 from enemies import Level_One_Dragon
 from items import DwarvianBookPage
-from tiles import Weapon_Tile
+from tiles import WeaponTile
 from items import WoodenSword
 from colorama import init
 init()
@@ -25,6 +25,7 @@ class Foyer(Room):
         super().__init__(width=8, height=8)
         self.name = "Foyer"
         self.description = Fore.LIGHTWHITE_EX + "\033[1mYou have entered the foyer.\nYou notice the room is in complete disarray. It is evident that a fight has taken place here...\033[0m\n"
+        
 
         print(Fore.MAGENTA + f"\n{self.description}") # Set the text to a light Cyan
 
@@ -36,4 +37,24 @@ class Foyer(Room):
                 
                 self.tiles[6, 1] = Enemy_tile(Level_One_Dragon())
                 self.tiles[2, 3] = Random_Paper_Tile(DwarvianBookPage())
-                self.tiles[3,3] = Weapon_Tile(WoodenSword())
+                self.tiles[3,3] = WeaponTile(WoodenSword())
+
+    def print_room(self, player):
+        for i in range(self.height):
+            for j in range(self.width):
+                tile = self.tiles[i][j]
+                if i == player.new_posistion_y and j == player.new_position_x:
+                    print(Fore.GREEN + 'P', end= ' ')
+                
+                elif isinstance(tile, Enemy_tile):
+                    print(Fore.RED + 'E', end=' ')
+            
+                elif isinstance(tile, Random_Paper_Tile):
+                    print(Fore.LIGHTWHITE_EX + 'Paper', end= '')
+               
+                elif isinstance(tile, WeaponTile):
+                    print(Fore.LIGHTYELLOW_EX + "W", end = ' ')
+
+                else:
+                    print (' ', end=' ')
+            print(Style.RESET_ALL)
