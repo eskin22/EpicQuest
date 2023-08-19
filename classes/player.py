@@ -11,6 +11,7 @@ from inventory import Inventory
 from _util import create_textbox
 from _util import look_at_paper_object
 from items import PaperObject
+from items import SteelSword
 from tiles import WeaponTile
 # from _util import options_menu
 
@@ -123,18 +124,22 @@ class Player:
         while True:
             player_options = input(
             Fore.LIGHTWHITE_EX
-            + "What would you like to do? \n1. Move \n2. View your stats \n3. View your inventory "
+            + "\nWhat would you like to do? \n1. Move \n2. View your stats \n3. View your inventory \n4. View room\n"
         ).strip()
-            print(f"User input: '{player_options}'")  # Add this line for debugging
+            
 
             if player_options == "1":
                 self.player_movements(room)
             
             elif player_options == "2":
-                    self.display_info()
+                self.display_info()
  
             elif player_options == "3":
-                    self.display_player_inventory()
+                self.display_player_inventory()
+            
+            elif player_options == "4":
+                room.print_room(self)
+
          
             else:
                 print("Invalid option. Please choose a valid option.")
@@ -226,7 +231,8 @@ class Player:
                 break 
             else:
                 print("You have entered an invalid response.")
-                pass
+                # maybe pass or break
+                continue
 
     
     
@@ -311,8 +317,11 @@ class Player:
         if weapon.item_type == "Weapon":
             if self.equipped_weapon is not None:
                 print(f"You have unequipped {self.equipped_weapon.name}.")
+                self.inventory.add_item_new(self.equipped_weapon)
+            
             self.equipped_weapon = weapon
             print(f"You have equipped {weapon.name}.")
+            
         else:
             print("You can only equip weapons.")
 
@@ -338,12 +347,12 @@ class Human(Player):
         self.mana = 10
         self.player_x = 0
         self.player_y = 0
-        self.weapon = None
+        self.equipped_weapon = None
         self.weapon_power = 15
 
 #* This a the subclass Elf, which is a race a player can choose
 class Elf(Player):
-    def __init__(self, name, race, weapon):
+    def __init__(self, name, race):
         super().__init__(name, race)
         self.skills = "Blah, blah, blah"
         self.name = name
@@ -359,12 +368,12 @@ class Elf(Player):
         self.mana = 15
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.equipped_weaponweapon = None
         self.weapon_power = 7
 
 #* This a the subclass Dwarf, which is a race a player can choose
 class Dwarf(Player):
-    def __init__(self, name, race, weapon):
+    def __init__(self, name, race):
         super().__init__(name, race)
         self.skills = "Blah, blah, blah"
         self.name = name
@@ -381,12 +390,12 @@ class Dwarf(Player):
         self.mana = 12
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.weapon = None
         self.weapon_power = 17
 
 #* This a the subclass Orc, which is a race a player can choose
 class Orc(Player):
-    def __init__(self, name, race, weapon):
+    def __init__(self, name, race):
         super().__init__(name, race)
         self.skills = "Blah, blah, blah"
         self.name = name
@@ -404,13 +413,13 @@ class Orc(Player):
         self.mana = 20
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.equipped_weapon = None
         self.weapon_power = 15
         self.weapon_power = 12
 
 #* This a the subclass Gnome, which is a race a player can choose
 class Gnome(Player):
-    def __init__(self, name, race, weapon):
+    def __init__(self, name, race):
         super().__init__(name, race)
         self.skills = "Blah, blah, blah"
         self.name = name
@@ -427,7 +436,7 @@ class Gnome(Player):
         self.mana = 15
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.equipped_weapon = None
         self.weapon_power = 6
 
 
@@ -450,12 +459,12 @@ class Tiefling(Player):
         self.mana = 30
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.equipped_weapon = None
         self.weapon_power = 5
 
 #* This a the subclass Dragon, which is a race a player can choose
 class Dragonborn(Player):
-    def __init__(self, name, race, weapon):
+    def __init__(self, name, race):
         super().__init__(name, race)
         self.skills = "Blah, blah, blah"
         self.name = name
@@ -472,7 +481,7 @@ class Dragonborn(Player):
         self.mana = 15
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.equipped_weapon = None
         self.weapon = 9
         
 #* This a the subclass Tiefling, which is a race a player can choose       
@@ -494,5 +503,5 @@ class Goblin(Player):
         self.mana = 25
         self.player_x = 0
         self.player_y = 0
-        self.weapon = weapon
+        self.equipped_weapon = None
         self.weapon_power = 6

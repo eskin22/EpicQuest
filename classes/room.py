@@ -8,6 +8,7 @@ from enemies import Level_One_Dragon
 from items import DwarvianBookPage
 from tiles import WeaponTile
 from items import WoodenSword
+from items import SteelSword
 from colorama import init
 init()
 from colorama import Fore, Back, Style
@@ -38,23 +39,30 @@ class Foyer(Room):
                 self.tiles[6, 1] = Enemy_tile(Level_One_Dragon())
                 self.tiles[2, 3] = Random_Paper_Tile(DwarvianBookPage())
                 self.tiles[3,3] = WeaponTile(WoodenSword())
+                # self.tile[1,3] = WeaponTile(SteelSword())
 
     def print_room(self, player):
         for i in range(self.height):
             for j in range(self.width):
                 tile = self.tiles[i][j]
-                if i == player.new_posistion_y and j == player.new_position_x:
-                    print(Fore.GREEN + 'P', end= ' ')
+                if i == player.player_y and j == player.player_x:
+                    print(Fore.GREEN + '★', end='      ')
+                 
                 
                 elif isinstance(tile, Enemy_tile):
-                    print(Fore.RED + 'E', end=' ')
+                    print(Fore.RED + '✖', end='      ')
+               
             
                 elif isinstance(tile, Random_Paper_Tile):
-                    print(Fore.LIGHTWHITE_EX + 'Paper', end= '')
+                    print(Fore.BLUE + '⁇', end='      ')
+                  
                
                 elif isinstance(tile, WeaponTile):
-                    print(Fore.LIGHTYELLOW_EX + "W", end = ' ')
+                    print(Fore.LIGHTYELLOW_EX + "⁇", end ='      ')
+                    
 
                 else:
-                    print (' ', end=' ')
+                    print (Fore.WHITE + '▢', end='      ')
+
             print(Style.RESET_ALL)
+          

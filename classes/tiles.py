@@ -69,7 +69,7 @@ class WeaponTile(Tile):
 
     def interact(self, player, inventory):
         self.weapon.display_weapon()
-        weapon_option = input("What would you like to do with this weapon? \n1. Add it inventory \n2. Equip Weapon \n. Keep moving.")
+        weapon_option = input("What would you like to do with this weapon? \n1. Add it inventory \n2. Equip Weapon \n3. Keep moving.")
         if weapon_option == "1":
             self.add_object_option(inventory)
         elif weapon_option == "2":

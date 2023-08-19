@@ -13,7 +13,7 @@ class Item():
         self.weight = None
 
     def display_weapon(self):
-        print(Fore.WHITE + "\033[0m--------------------------------------------------------------------------------------")
+        print(Fore.WHITE + "\n\033[0m--------------------------------------------------------------------------------------")
         print(Fore.WHITE + f"\033[0m{self.description}")
         print(Fore.WHITE + f"\033[0mDamage: {self.damage}")
         print(Fore.WHITE + f"\033[0mForge Type: {self.forge_type}")
@@ -59,25 +59,25 @@ class WoodenSword(Sword):
 
 # Subclass for an Iron Sword
 class IronSword(Sword):
-    def __init__(self, type, name, description, damage_min, damage_max, damage, weight, forge_type):
-        super().__init__(type, name, description, damage_min, damage_max, damage, weight, forge_type)
+    def __init__(self):
+        super().__init__()
         self.name = "Iron Sword"
         self.description = "An Iron Sword. Still not great for combat, but could be useful for weaker enemies."
         self.damage_min = 5
         self.damage_max = 10
-        self.damage = get_random_attribute(damage_min, damage_max)
+        self.damage = get_random_attribute(self.damage_min, self.damage_max)
         self.weight = 4
         self.forge_type = "Iron"
 
 # Subclass for an Steel Sword
 class SteelSword(Sword):
-    def __init__(self, type, name, description, damage_min, damage_max, damage, weight, forge_type):
-        super().__init__(type, name, description, damage_min, damage_max, damage, weight, forge_type)
+    def __init__(self):
+        super().__init__()
         self.name = "Steel"
         self.description = "A Steel Sword. This is a strong weapon, likely to do heavy damage to opponents."
         self.damage_min = 9
         self.damage_max = 14
-        self.damage = get_random_attribute(damage_min, damage_max)
+        self.damage = get_random_attribute(self.damage_min, self.damage_max)
         self.weight = 8
         self.forge_type = "Steel"
 

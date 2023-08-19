@@ -1,9 +1,11 @@
 import random
 from colorama import init
+import os
 init()
 from colorama import Fore, Back, Style
 from _util import create_textbox
 from _util import get_random_attribute
+# from testing_dragon import print_enemy_anscii
 class Enemy():
     def __init__(self):
         self.enemy_type = None
@@ -13,12 +15,14 @@ class Enemy():
         self.enemy_phrases = None
         self.enemy_attack_types = {}
        
+       
     # displaying enemy info
     def display_enemy_info(self):
         enemy_stats = [
             Back.LIGHTRED_EX + Fore.LIGHTWHITE_EX + Style.BRIGHT + f"\033[1m{self.get_enemy_type()} INFO:",
             Back.LIGHTRED_EX + Fore.LIGHTWHITE_EX + Style.BRIGHT + f"- Enemy HP: {self.enemy_hp}",
-            Back.LIGHTRED_EX + Fore.LIGHTWHITE_EX + Style.BRIGHT + f"- Enemy Attack Power: {self.enemy_attack_strength}"
+            Back.LIGHTRED_EX + Fore.LIGHTWHITE_EX + Style.BRIGHT + f"- Enemy Attack Power: {self.enemy_attack_strength}",
+            Back.LIGHTRED_EX + Fore.LIGHTWHITE_EX + Style.BRIGHT + f"{self.print_enemy_anscii()}"
         ]
 
         create_textbox(enemy_stats, background_color= Back.LIGHTRED_EX)
@@ -82,6 +86,16 @@ class Enemy():
         self.enemy_attack_strength = attack_strength
         return random_attack, attack_strength, self.enemy_attack_strength
     
+    def print_enemy_anscii(self):
+        source = os.getcwd()
+        os.chdir(r'C:\Users\cdale\OneDrive\Documents\GitHub\EpicQuest')
+        with open(f"classes/assets/enemy_images/{self.get_enemy_type().lower()}_anscii.txt", 'r') as art_file:
+            enemy_picture = art_file.read()
+            art_file.close()
+
+        print(enemy_picture)
+        os.chdir(source)
+    
     
 
 
@@ -103,6 +117,7 @@ class Level_One_Dragon(Enemy):
                                    "Fire Strike": 9}
         self.get_enemy_attack_strength()
         self.set_random_attack(random.choice(list(self.enemy_attack_types.keys())))
+        
 
 
 # Create a level one witch

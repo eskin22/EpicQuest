@@ -26,10 +26,12 @@ class Inventory:
 
     # This function adds an item to an item type list
     def add_item_new(self, item):
-         options = input(Fore.LIGHTWHITE_EX + "\nWould you like to add the item?\n1. Yes\n2. No\n")
-         while True:
+        while True:
+            options = input(Fore.LIGHTWHITE_EX + "\nWould you like to add the item?\n1. Yes\n2. No\n")
             if options == "1":
                 self.inventory[item.item_type].append(item)
+                print("It has been added.")
+                break
             else: 
                 break
              
